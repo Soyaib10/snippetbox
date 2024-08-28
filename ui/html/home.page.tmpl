@@ -1,22 +1,8 @@
-<!doctype html>
-<html lang='en'>
+{{template "base" .}}
 
-<head>
-    <meta charset='utf-8'>
-    <title>Home - Snippetbox</title>
-</head>
+{{define "title"}}Home{{end}}
 
-<body>
-    <header>
-        <h1><a href='/'>Snippetbox</a></h1>
-    </header>
-    <nav>
-        <a href="/">Home</a>
-    </nav>
-    <section>
-        <h2>Latest Snippets</h2>
-        <p>There's nothing to see here yet!</p>
-    </section>
-</body>
-
-</html>
+{{define "body"}}
+<h2>Latest Snippets</h2>
+<p>There's nothing to see here yet!</p>
+{{end}}
