@@ -7,13 +7,15 @@ import (
 	"net/http"
 	"os"
 
-	_ "github.com/go-sql-driver/mysql" 
+	"github.com/Soyaib10/snippetbox/pkg/models/mysql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // application struct application-wide dependencies
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *mysql.SnippetModel
 }
 
 func main() {
@@ -21,6 +23,7 @@ func main() {
 	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
 	flag.Parse()
 
+	// infoLog, errorLog, db are local instances of applicaton struct 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -33,6 +36,7 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
+		snippets: &mysql.SnippetModel{DB: db},
 	}
 
 	srv := &http.Server{
