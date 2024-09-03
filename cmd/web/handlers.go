@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"text/template"
 
 	"github.com/Soyaib10/snippetbox/pkg/models"
 )
@@ -16,23 +15,33 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Initialize a slice containing the paths to the two files. Note that the home.page.tmpl file must be the *first* file in the slice.
-	files := []string{
-		"./ui/html/home.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
-	}
-
-	ts, err := template.ParseFiles(files...)
+	s, err := app.snippets.Latest()
 	if err != nil {
-		app.serverError(w, err) // Using serverError() helper
+		app.serverError(w, err)
 		return
 	}
 
-	err = ts.Execute(w, nil)
-	if err != nil {
-		app.serverError(w, err) // Using serverError() helper.
+	for _, snippet := range s {
+		fmt.Fprintf(w, "%v\n\n", snippet)
 	}
+
+	// Initialize a slice containing the paths to the two files. Note that the home.page.tmpl file must be the *first* file in the slice.
+	// files := []string{
+	// 	"./ui/html/home.page.tmpl",
+	// 	"./ui/html/base.layout.tmpl",
+	// 	"./ui/html/footer.partial.tmpl",
+	// }
+
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.serverError(w, err) // Using serverError() helper
+	// 	return
+	// }
+
+	// err = ts.Execute(w, nil)
+	// if err != nil {
+	// 	app.serverError(w, err) // Using serverError() helper.
+	// }
 }
 
 // showSnippet shows a specific snippet
@@ -51,7 +60,7 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	
+
 	// Write the snippet data as a plain-text HTTP response body.
 	fmt.Fprintf(w, "%v", s)
 }
