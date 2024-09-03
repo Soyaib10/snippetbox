@@ -23,7 +23,7 @@ func main() {
 	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
 	flag.Parse()
 
-	// infoLog, errorLog, db are local instances of applicaton struct 
+	// infoLog, errorLog, db are local instances of applicaton struct
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -44,7 +44,7 @@ func main() {
 		ErrorLog: errorLog,
 		Handler:  app.routes(), // Call the new app.routes() method
 	}
-	
+
 	infoLog.Printf("Starting server on %s", *addr)
 	err = srv.ListenAndServe()
 	errorLog.Fatal(err)
@@ -61,4 +61,3 @@ func openDB(dsn string) (*sql.DB, error) {
 	}
 	return db, nil
 }
-
