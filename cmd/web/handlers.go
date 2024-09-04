@@ -22,27 +22,27 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, snippet := range s {
-		fmt.Fprintf(w, "%v\n\n", snippet)
-	}
+	// Create an instance of a templateData struct holding the slice of snippets
+	data := &templateData{Snippets: s}
+
 
 	// Initialize a slice containing the paths to the two files. Note that the home.page.tmpl file must be the *first* file in the slice.
-	// files := []string{
-	// 	"./ui/html/home.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partial.tmpl",
-	// }
+	files := []string{
+		"./ui/html/home.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
 
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
-	// 	app.serverError(w, err) // Using serverError() helper
-	// 	return
-	// }
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err) // Using serverError() helper
+		return
+	}
 
-	// err = ts.Execute(w, nil)
-	// if err != nil {
-	// 	app.serverError(w, err) // Using serverError() helper.
-	// }
+	err = ts.Execute(w, data)
+	if err != nil {
+		app.serverError(w, err) // Using serverError() helper.
+	}
 }
 
 // showSnippet shows a specific snippet
