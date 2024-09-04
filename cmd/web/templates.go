@@ -2,7 +2,7 @@ package main
 
 import (
 	"path/filepath"
-	"text/template"
+	"html/template"
 
 	"github.com/Soyaib10/snippetbox/pkg/models"
 )
@@ -10,29 +10,39 @@ import (
 // templateData acts as the holding structure for any dynamic data that we want to pass to our HTML templates as we know s html/template package allow you to pass in only one item of dynamic data when rendating a template
 
 type templateData struct {
-	Snippet *models.Snippet
+	Snippet  *models.Snippet
 	Snippets []*models.Snippet
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {
-	cache := map[string]*template.Template{}
+    cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob(filepath.Join(dir, "*.page.tmpl")) // This essentially gives us a slice of all the 'page' templates for the application
-	if err != nil {
-		return nil, err
-	}
-	for _, page := range pages {
-		name := filepath.Base(page) // Base returns the last element of the path
-		ts, err := template.ParseFiles(page)
-		if err != nil {
-			return nil, err
-		}
+    pages, err := filepath.Glob(filepath.Join(dir, "*.page.tmpl")) // This essentially gives us a slice of all the 'page' templates for the application
+    if err != nil {
+        return nil, err
+    }
 
-		ts, err = ts.ParseGlob(filepath.Join(dir, "*.partial.tmpl")) //  ParseGlob method to add any 'partial' templates to the template set
-		if err != nil {
-			return nil, err
-		}
-		cache[name] = ts
-	}
-	return cache, nil
+    for _, page := range pages {
+        name := filepath.Base(page) // Base returns the last element of the path
+
+        ts, err := template.New(name).ParseFiles(page)
+        if err != nil {
+            return nil, err
+        }
+
+        ts, err = ts.ParseGlob(filepath.Join(dir, "*.layout.tmpl")) //  ParseGlob method to add any 'layout' templates to the template set
+        if err != nil {
+            return nil, err
+        }
+
+        ts, err = ts.ParseGlob(filepath.Join(dir, "*.partial.tmpl"))
+        if err != nil {
+            return nil, err
+        }
+
+        cache[name] = ts
+    }
+
+    return cache, nil
 }
+
