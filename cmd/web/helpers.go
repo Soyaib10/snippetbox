@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"runtime/debug"
@@ -14,11 +15,15 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 		return
 	}
 
-	// Execute the template set
-	err := ts.Execute(w, td)
+	// Initialize a new buffer
+	buf := new(bytes.Buffer)
+
+	// Write the template to the buffer, instead of straight to the http.ResponseWriter. 
+	err := ts.Execute(buf, td)
 	if err != nil {
 		app.serverError(w, err)
 	}
+	buf.WriteTo(w)
 }
 
 // serverError helper writes an error message and stack trace to the errorLog then sends a generic 500 Internal Server Error response to the user.
