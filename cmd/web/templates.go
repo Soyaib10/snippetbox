@@ -2,10 +2,10 @@ package main
 
 import (
 	"html/template"
-	"net/url"
 	"path/filepath"
 	"time"
 
+	"github.com/Soyaib10/snippetbox/pkg/forms"
 	"github.com/Soyaib10/snippetbox/pkg/models"
 )
 
@@ -13,8 +13,7 @@ import (
 
 type templateData struct {
 	CurrentYear int
-	FormData    url.Values
-	FormErrors  map[string]string
+	Form        *forms.Form
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
 }

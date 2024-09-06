@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-	"unicode/utf8"
 
+	"github.com/Soyaib10/snippetbox/pkg/forms"
 	"github.com/Soyaib10/snippetbox/pkg/models"
 )
 
@@ -51,7 +50,9 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 
 // createSnippetForm handler, which for returns a placeholder
 func (app *application) createSnippetForm(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, "create.page.tmpl", nil)
+	app.render(w, r, "create.page.tmpl", &templateData{
+		Form: forms.New(nil),
+	})
 }
 
 // createSnippet creates a new snippet
@@ -63,41 +64,20 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	title := r.PostForm.Get("title")
-	content := r.PostForm.Get("content")
-	expires := r.PostForm.Get("expires")
+	// Create a new forms.Form struct containing the POSTed data from the form, then use the validation methods to check the content.
+	form := forms.New(r.PostForm)
+	form.Required("title", "content", "expires")
+	form.MaxLength("title", 100)
+	form.PermittedValues("expires", "365", "7", "1")
 
-	// Initialize a map to hold any validation errors.
-	errors := make(map[string]string)
-
-	// Checking errors
-	if strings.TrimSpace(title) == "" {
-		errors["title"] = "Title field can't be black"
-	} else if utf8.RuneCountInString(title) > 100 {
-		errors["title"] = "Title field is too long (max 100 characters allowed)"
-	}
-
-	if strings.TrimSpace(content) == "" {
-		errors["content"] = "Content field can't be blank"
-	}
-
-	if strings.TrimSpace(expires) == "" {
-		errors["expires"] = "Expires field can't be blank"
-	} else if expires != "365" && expires != "7" && expires != "1" {
-		errors["expires"] = "Expires field is invalid"
-	}
-
-	// If there are any errors, dump them in a plain text HTTP response and ret from the handler.
-	if len(errors) > 0 {
-		app.render(w, r, "create.page.tmpl", &templateData{
-			FormErrors: errors,
-			FormData: r.PostForm,
-		})
+	// If the form isn't valid, redisplay the template passing in the form.Form object as the data.
+	if !form.Valid() {
+		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
 		return
 	}
 
-	// Create a new snippet record in the database using the form data.
-	id, err := app.snippets.Insert(title, content, expires)
+	// form data (with type url.Values) has been anonymously embedde in the form.Form struct, we can use the Get() method to retrieve the validated value for a particular form field.
+	id, err := app.snippets.Insert(form.Get("title"), form.Get("content"), form.Get("expires"))
 	if err != nil {
 		app.serverError(w, err)
 		return
