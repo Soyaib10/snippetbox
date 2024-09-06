@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/Soyaib10/snippetbox/pkg/models"
 )
@@ -54,18 +56,48 @@ func (app *application) createSnippetForm(w http.ResponseWriter, r *http.Request
 
 // createSnippet creates a new snippet
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
-	// Create some variables holding dummy data. We'll remove these later on during the build.
-	title := "O snail"
-	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi"
-	expires := "7"
+	// First we call r.ParseForm() which adds any data in POST request bodies to the r.PostForm map.
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
 
-	// Pass the data to the snippetModel.Insert() method, receiving the ID of hte new record.
+	title := r.PostForm.Get("title")
+	content := r.PostForm.Get("content")
+	expires := r.PostForm.Get("expires")
+
+	// Initialize a map to hold any validation errors.
+	errors := make(map[string]string)
+
+	// Checking errors
+	if strings.TrimSpace(title) == "" {
+		errors["title"] = "Title field can't be black"
+	} else if utf8.RuneCountInString(title) > 100 {
+		errors["title"] = "Title field is too long (max 100 characters allowed)"
+	}
+
+	if strings.TrimSpace(content) == "" {
+		errors["content"] = "Content field can't be blank"
+	}
+
+	if strings.TrimSpace(expires) == "" {
+		errors["expires"] = "Expires field can't be blank"
+	} else if expires != "365" && expires != "7" && expires != "1" {
+		errors["expires"] = "Expires field is invalid"
+	}
+
+	// If there are any errors, dump them in a plain text HTTP response and ret from the handler.
+	if len(errors) > 0 {
+		fmt.Fprint(w, errors)
+		return
+	}
+
+	// Create a new snippet record in the database using the form data.
 	id, err := app.snippets.Insert(title, content, expires)
 	if err != nil {
 		app.serverError(w, err)
 		return
 	}
-
-	// Redirect the user to the relevant page for the snippet.
 	http.Redirect(w, r, fmt.Sprintf("/snippet/%d", id), http.StatusSeeOther)
 }
