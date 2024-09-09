@@ -6,7 +6,7 @@ import (
 	"github.com/Soyaib10/snippetbox/pkg/models"
 )
 
-// Define a SnippetModel type which wraps a sql.DB connection pool.
+// Define a SnippetModel type which wraps a sql.DB connection pool. Needs for every table
 type SnippetModel struct {
 	DB *sql.DB
 }

@@ -14,12 +14,13 @@ import (
 	"github.com/golangcollege/sessions"
 )
 
-// application struct application-wide dependencies
+// application struct application-wide dependencies. Mianly we add those things that are needed for the handler
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
 	session       *sessions.Session
 	snippets      *mysql.SnippetModel
+	users         *mysql.Users
 	templateCache map[string]*template.Template
 }
 
@@ -46,7 +47,7 @@ func main() {
 	}
 
 	// Initialize and define session properties
-	session := sessions.New([]byte(*secret)) 
+	session := sessions.New([]byte(*secret))
 	session.Lifetime = 12 * time.Hour
 	session.Secure = true
 
@@ -55,6 +56,7 @@ func main() {
 		infoLog:       infoLog,
 		session:       session,
 		snippets:      &mysql.SnippetModel{DB: db},
+		users:         &mysql.Users{DB: db},
 		templateCache: templateCache,
 	}
 

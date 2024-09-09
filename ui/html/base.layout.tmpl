@@ -1,6 +1,6 @@
 {{define "base"}}
 <!doctype html>
-<html lang="en">
+<html lang="en" id="html-element">
 
 <head>
     <meta charset='UTF-8'>
@@ -29,7 +29,7 @@
     </nav>
     <section>
         {{with .Flash}}
-        <div class='flash '>{{.}}</div>
+        <div class='flash'>{{.}}</div>
         {{end}}
         {{template "body" .}}
     </section>
