@@ -8,7 +8,7 @@ func (e errors) Add(field, message string) {
 	e[field] = append(e[field], message)
 }
 
-// Implement a Get() method to retrieve the first error message for a given field from the map.
+// Get() method to retrieve the first error message for a given field from the map.
 func (e errors) Get(field string) string {
 	es := e[field]
 	if len(es) == 0 {
