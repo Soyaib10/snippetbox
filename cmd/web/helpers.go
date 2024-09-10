@@ -8,14 +8,20 @@ import (
 	"time"
 )
 
+// The authenticatedUser method returns the ID of the current user from the session, or zero if the request is from an unauthenticated user.
+func (app *application) authenticatedUser(r *http.Request) int {
+	return app.session.GetInt(r, "userID")
+}
+
 func (app *application) addDefaultData(td *templateData, r *http.Request) *templateData {
 	if td == nil {
 		td = &templateData{}
 	}
+	td.AuthenticatedUser = app.authenticatedUser(r)
 	td.CurrentYear = time.Now().Year()
 	// Add the flash message to the template data, if one exists.
 	td.Flash = app.session.PopString(r, "flash")
-	return td;
+	return td
 }
 
 func (app *application) render(w http.ResponseWriter, r *http.Request, name string, td *templateData) {
@@ -29,7 +35,7 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	// Initialize a new buffer
 	buf := new(bytes.Buffer)
 
-	// Write the template to the buffer, instead of straight to the http.ResponseWriter. 
+	// Write the template to the buffer, instead of straight to the http.ResponseWriter.
 	err := ts.Execute(buf, app.addDefaultData(td, r))
 	if err != nil {
 		app.serverError(w, err)
