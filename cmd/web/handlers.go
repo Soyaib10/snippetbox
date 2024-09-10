@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -41,6 +42,7 @@ func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
 		app.render(w, r, "signup.page.tmpl", &templateData{Form: form})
 		return
 	} else if err != nil {
+		log.Println("Error inserting user:", err)
 		app.serverError(w, err)
 		return
 	}
