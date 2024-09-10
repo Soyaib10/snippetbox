@@ -22,7 +22,7 @@ func (m *UserModel) Insert(name, email, password string) error {
 		return err
 	}
 	stmt := `INSERT INTO users (name, email, hashed_password, created)
-VALUES(?, ?, ?, UTC_TIMESTAMP())`
+			VALUES(?, ?, ?, UTC_TIMESTAMP())`
 
 	// Exec() method to insert the user details and hashed password into the users table.
 	_, err = m.DB.Exec(stmt, name, email, string(hashedPassword))
