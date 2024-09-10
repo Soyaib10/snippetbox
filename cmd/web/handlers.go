@@ -85,7 +85,7 @@ func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
 func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 	app.session.Remove(r, "userID")
 	app.session.Put(r, "flash", "You have been logged out successfully!")
-	http.Redirect(w, r, "/", 303)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 // home shows homepage of the app
