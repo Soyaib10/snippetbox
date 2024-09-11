@@ -59,7 +59,7 @@ Users can log in to create their snippets.
 Users can create and save new snippets along with the setting of expiration time.
 
 #### 5. See Snippet
-![See Snippet](./ui/static/img/screenshoot/showSnippet.png)
+![See Snippet](./ui/static/img/screenshoot/seesnippet.png)
 Users can view their saved snippets.
 
 ---
