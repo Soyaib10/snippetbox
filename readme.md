@@ -29,6 +29,7 @@ This is a web application similar to Ubuntu Pastebin or GitHub Gist, designed fo
 - Pat Router
 - Alice Middleware Manager
 - Golangcollege Session Manager
+- Justin NoSurf Package for CSRF Protection
 
 ---
 
