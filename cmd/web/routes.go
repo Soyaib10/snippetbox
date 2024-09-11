@@ -11,7 +11,7 @@ import (
 func (app *application) routes() http.Handler {
 	// standardMiddleware will be used for every request our application receives. dynamicMiddleware middleware specific to our dynamic application routes.
 	standardMiddleware := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
-	dynamicMiddleware := alice.New(app.session.Enable, noSurf)
+	dynamicMiddleware := alice.New(app.session.Enable, noSurf, app.authenticate)
 
 	mux := pat.New()
 	mux.Get("/", dynamicMiddleware.ThenFunc(app.home))
