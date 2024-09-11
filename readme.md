@@ -1,4 +1,4 @@
-# **Snippetbox** - Effortlessly Craft Your Snippet In No Time
+# **Snippetbox** - Effortlessly Craft Your Snippet In a Flash
 
 This is a web application similar to Ubuntu Pastebin or GitHub Gist, designed for users to create and save text snippets. Registered users can create their own snippets, set an expiration time for each snippet, and view saved snippets.
 

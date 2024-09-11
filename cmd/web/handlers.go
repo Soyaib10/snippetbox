@@ -10,12 +10,14 @@ import (
 	"github.com/Soyaib10/snippetbox/pkg/models"
 )
 
+// signupUserForm shows signup form
 func (app *application) signupUserForm(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "signup.page.tmpl", &templateData{
 		Form: forms.New(nil),
 	})
 }
 
+// signupUser makes signup possible
 func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -51,12 +53,14 @@ func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 }
 
+// loginUserForm shows login form
 func (app *application) loginUserForm(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "login.page.tmpl", &templateData{
 		Form: forms.New(nil),
 	})
 }
 
+// loginUser help user to login
 func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -64,8 +68,7 @@ func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check whether the credentials are valid. If they're not, add a generic error
-	// message to the form failures map and re-display the login page.
+	// Check whether the credentials are valid. If they're not, add a generic error message to the form failures map and re-display the login page.
 	form := forms.New(r.PostForm)
 	id, err := app.users.Authenticate(form.Get("email"), form.Get("password"))
 	if err == models.ErrInvalidCredentials {
@@ -164,8 +167,4 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	// Put string as flash message
 	app.session.Put(r, "flash", "Snippet successfully created!")
 	http.Redirect(w, r, fmt.Sprintf("/snippet/%d", id), http.StatusSeeOther)
-}
-
-func ping(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("OK"))
 }
