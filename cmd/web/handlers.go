@@ -85,6 +85,7 @@ func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/snippet/create", http.StatusSeeOther)
 }
 
+// logoutUser logs user out of the session
 func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 	app.session.Remove(r, "userID")
 	app.session.Put(r, "flash", "You have been logged out successfully!")
