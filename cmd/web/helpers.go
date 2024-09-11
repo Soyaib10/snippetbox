@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"runtime/debug"
 	"time"
+
+	"github.com/justinas/nosurf"
 )
 
 // The authenticatedUser method returns the ID of the current user from the session, or zero if the request is from an unauthenticated user.
@@ -17,9 +19,9 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 	if td == nil {
 		td = &templateData{}
 	}
+	td.CSRFToken = nosurf.Token(r)
 	td.AuthenticatedUser = app.authenticatedUser(r)
 	td.CurrentYear = time.Now().Year()
-	// Add the flash message to the template data, if one exists.
 	td.Flash = app.session.PopString(r, "flash")
 	return td
 }

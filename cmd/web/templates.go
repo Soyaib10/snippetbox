@@ -12,6 +12,7 @@ import (
 // templateData acts as the holding struct for any dynamic data that we want to pass to our HTML templates as we know s html/template package allow you to pass in only one item of dynamic data when rendating a template
 type templateData struct {
 	AuthenticatedUser int
+	CSRFToken         string
 	CurrentYear       int
 	Flash             string
 	Form              *forms.Form
